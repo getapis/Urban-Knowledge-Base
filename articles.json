@@ -1,0 +1,72 @@
+[
+  {
+    "id": 2026051301,
+    "title": "Attendance Past 7 Days Report SOP",
+    "category": "retention-playbook",
+    "status": "Published",
+    "author": "Retention Team",
+    "date": "2026-05-13",
+    "summary": "Pipeline Party preparation process for pulling the Clubworx attendance report, grouping members by recent attendance, and identifying low-engagement members for follow-up.",
+    "content": "## Process\nAttendance Past 7 Days Report (Pipeline Party)\n\n## What\nPreparing the Attendance Past 7 Days report from Clubworx and organising members into attendance groups for use in Pipeline Party.\n\n## Why\nThis report shows who is training and who is slipping. It allows the team to identify low engagement early, prioritise follow-ups, and drive retention through targeted action.\n\n## When\nEvery Monday before the Pipeline Party meeting.\n\n## Who\nReception / Admin.\n\n## Step 1 - Pull & Set Up Report\n- Download the Attendance Report from Clubworx.\n- Open the report in Google Sheets.\n- Add today's date at the top of the sheet.\n\n## Step 2 - Sort Attendance Data\n- Select the entire sheet.\n- Click Data > Sort Range > Advanced Range Sorting Options.\n- Tick \"Data has header row\".\n- Sort by Attendances Last 7 Days.\n- Confirm the list is now ordered from lowest to highest attendance.\n\n## Step 3 - Split Members Into Attendance Groups\n- Create new tabs by pressing the \"+\" button.\n- In the main sheet, select all members with 0 attendances.\n- Copy and paste them into a new tab named \"0\".\n- Repeat for each attendance level: 1 attendance into tab \"1\", 2 attendances into tab \"2\", and continue for all attendance levels up to 4+.\n\n## Step 4 - Clean Each Tab\n- In each tab, select all data.\n- Click Data > Sort Range > Advanced Options.\n- Tick \"Data has header row\".\n- Sort by Membership Name.\n\n## Step 5 - Remove Non-Relevant Members\n- Identify all Kickstarter members. Highlight and delete these rows because they are managed separately.\n- Identify any Thailand Tour, Sponsored, or Payment-type memberships. Highlight and delete these rows because they are not relevant to attendance tracking.\n\n## Step 6 - Finalise Numbers\n- At the bottom of each tab, add the total number of members.\n- Subtract 1 from the total to exclude the header row.\n\n## Step 7 - Final Checks\n- Confirm all tabs are correctly labelled: 0, 1, 2, etc.\n- Confirm all data is sorted by Membership Name.\n- Confirm all irrelevant members have been removed.\n- Confirm totals are accurate on each tab.\n- Confirm the sheet is shared and accessible.\n\n## Step 8 - Share With The Team\n- Click Share and give access to miami@urbanmuythai.com, getfit@urbanmuythai.com, and melissa@urbanmuaythai.com.\n- Ensure the sheet is accessible before the Pipeline Party meeting begins.\n\n## Key Insight\nThis report is used during Pipeline Party to identify low-attendance members and support Fringe Reach-Outs. It shows who is slipping before they disappear. The team uses it to catch low engagement early, step in, and keep members training.\n\n## Standard Of Execution\n- Sheet is clean, structured, and easy to navigate.\n- Tabs are correctly split and labelled: 0, 1, 2, etc.\n- No irrelevant members are included.\n- Totals are accurate on each tab.\n- Sheet is shared and ready before Pipeline Party.\n\n## Key Principle\nThis report shows who is slipping before they disappear. The team uses it to catch low engagement early, step in, and keep members training.\n\n## Source Document\nGoogle Doc: https://docs.google.com/document/d/1vh6M5L_z_YKYxXCdmFKIF6gFFtPGDnGX/edit"
+  },
+  {
+    "id": 1,
+    "title": "Morning Opening Checklist",
+    "category": "opening-closing",
+    "status": "Published",
+    "author": "Operations Team",
+    "date": "2025-05-01",
+    "summary": "Step-by-step procedure for opening the gym each morning safely and efficiently.",
+    "content": "## Purpose\nEnsure the facility opens consistently, safely, and on time every morning.\n\n## Responsible Staff\nOpening manager or designated team lead.\n\n## Steps\n1. **Arrive 15 minutes early** - Collect keys from the key safe.\n2. **Perimeter check** - Walk the exterior and check for damage or security concerns.\n3. **Disable alarm** - Disarm the security system within 30 seconds of entry.\n4. **Lights & ventilation** - Turn on all lighting and set HVAC to 20C.\n5. **Equipment check** - Power on all bags, pads, and cardio equipment.\n6. **Facilities check** - Inspect change rooms and restock towels and amenities.\n7. **Reception setup** - Log into the booking system and confirm class schedule.\n8. **Open doors** - Unlock main entrance at scheduled open time."
+  },
+  {
+    "id": 2,
+    "title": "Evening Closing Procedure",
+    "category": "opening-closing",
+    "status": "Published",
+    "author": "Operations Team",
+    "date": "2025-05-01",
+    "summary": "End-of-day closing checklist including security and lockup.",
+    "content": "## Purpose\nEnsure the gym is closed securely and all end-of-day tasks are completed.\n\n## Steps\n1. Announce closing 15 minutes before close time.\n2. Ensure all members have exited and change rooms are cleared.\n3. Complete end-of-day sales and attendance report.\n4. Wipe down and store all pads and equipment.\n5. Final walkthrough - check all rooms and fire exits.\n6. Set the alarm and exit within 30 seconds.\n7. Lock all exterior doors and test each one.\n8. Complete the closing log."
+  },
+  {
+    "id": 3,
+    "title": "Class Delivery Protocol",
+    "category": "class-operations",
+    "status": "Published",
+    "author": "Head Instructor",
+    "date": "2025-04-22",
+    "summary": "Standards for delivering a safe and high-quality Muay Thai class.",
+    "content": "## Before Class\n- Arrive 10 minutes before start time\n- Inspect training area for hazards\n- Confirm attendee list in booking system\n- Set up pads and equipment\n\n## During Class\n- Begin with a structured warm-up\n- Clearly explain and demonstrate all techniques\n- Monitor students for safety and correct form\n- Maintain a class register for insurance and safety purposes"
+  },
+  {
+    "id": 4,
+    "title": "New Staff Orientation",
+    "category": "staff-procedures",
+    "status": "Published",
+    "author": "HR & Ops",
+    "date": "2025-04-20",
+    "summary": "First-day and first-week checklist for all new team members.",
+    "content": "## Day 1 Checklist\n- Issue access card and assign locker\n- Complete WHS induction\n- Set up booking platform, email, and POS access\n- Walk through facility and introduce the team\n- Review key SOPs: Opening, Closing, Emergency"
+  },
+  {
+    "id": 5,
+    "title": "Equipment Maintenance Log",
+    "category": "equipment",
+    "status": "Draft",
+    "author": "Facilities",
+    "date": "2025-05-05",
+    "summary": "Monthly equipment inspection checklist and fault reporting process.",
+    "content": "## Monthly Inspection\nAll equipment must be inspected on the first Monday of each month.\n\n## Checklist\n- Inspect all heavy bags for tears and chain wear\n- Check all striking pads for damage\n- Test emergency stops on cardio equipment\n- Inspect floor mats for tears or trip hazards\n- Check first aid kit is fully stocked"
+  },
+  {
+    "id": 6,
+    "title": "Member Complaint Resolution",
+    "category": "member-ops",
+    "status": "Published",
+    "author": "Customer Ops",
+    "date": "2025-04-28",
+    "summary": "Standard approach to handling member complaints professionally.",
+    "content": "## Guiding Principles\nAll complaints must be treated with respect, resolved promptly, and documented.\n\n## Steps\n1. **Listen** - Let the member speak without interruption.\n2. **Acknowledge** - Validate their concern genuinely.\n3. **Clarify** - Ask questions to fully understand the issue.\n4. **Resolve** - Offer a practical solution within your authority.\n5. **Document** - Log the complaint and outcome in the CRM.\n6. **Follow up** - Contact the member within 48 hours."
+  }
+]

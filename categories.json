@@ -1,0 +1,51 @@
+[
+  {
+    "id": "opening-closing",
+    "name": "Opening & Closing",
+    "icon": "key",
+    "color": "#c0161a",
+    "desc": "Daily open/close checklists and security procedures."
+  },
+  {
+    "id": "class-operations",
+    "name": "Class Operations",
+    "icon": "glove",
+    "color": "#d4a017",
+    "desc": "Class scheduling, instructor protocols, and training floor procedures."
+  },
+  {
+    "id": "staff-procedures",
+    "name": "Staff Procedures",
+    "icon": "users",
+    "color": "#e06030",
+    "desc": "Onboarding, shift handover, and team protocols."
+  },
+  {
+    "id": "equipment",
+    "name": "Equipment & Safety",
+    "icon": "gear",
+    "color": "#6060c0",
+    "desc": "Equipment maintenance, safety checks, and incident reporting."
+  },
+  {
+    "id": "member-ops",
+    "name": "Member Operations",
+    "icon": "heart",
+    "color": "#20a060",
+    "desc": "Member enquiries, sign-ups, complaints, and service standards."
+  },
+  {
+    "id": "emergency",
+    "name": "Emergency Procedures",
+    "icon": "alert",
+    "color": "#e03030",
+    "desc": "Emergency response, evacuation, and first aid protocols."
+  },
+  {
+    "id": "retention-playbook",
+    "name": "Retention Playbook",
+    "icon": "chart",
+    "color": "#3ec98a",
+    "desc": "Retention reports, follow-up rhythms, and engagement recovery plays."
+  }
+]
