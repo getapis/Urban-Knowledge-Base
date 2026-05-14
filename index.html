@@ -786,15 +786,33 @@ function readGithubSettings(){
   }
 }
 
+function inferGithubPagesSettings(){
+  const host=location.hostname;
+  const firstPathPart=location.pathname.split('/').filter(Boolean)[0]||'';
+  if(host.endsWith('.github.io')&&firstPathPart){
+    return {
+      owner:host.replace('.github.io',''),
+      repo:firstPathPart,
+      branch:'main'
+    };
+  }
+  return {owner:'getapis',repo:'Urban-Knowledge-Base',branch:'main'};
+}
+
+function normalizeRepoName(repo){
+  return repo.trim().replace(/\s+/g,'-');
+}
+
 function openGithubModal(){
   const settings=readGithubSettings();
-  document.getElementById('gh-owner').value=settings.owner||'';
-  document.getElementById('gh-repo').value=settings.repo||'';
-  document.getElementById('gh-branch').value=settings.branch||'main';
+  const inferred=inferGithubPagesSettings();
+  document.getElementById('gh-owner').value=settings.owner||inferred.owner||'';
+  document.getElementById('gh-repo').value=settings.repo||inferred.repo||'';
+  document.getElementById('gh-branch').value=settings.branch||inferred.branch||'main';
   document.getElementById('gh-token').value=settings.token||'';
-  document.getElementById('gh-status').value=settings.owner&&settings.repo?'Configured for this session':'Not configured';
+  document.getElementById('gh-status').value=settings.owner&&settings.repo?'Configured for this session':'Ready for token';
   document.getElementById('github-modal').classList.add('open');
-  setTimeout(()=>document.getElementById('gh-owner').focus(),40);
+  setTimeout(()=>document.getElementById(settings.owner?'gh-owner':'gh-token').focus(),40);
 }
 
 function closeGithubModal(){
@@ -804,7 +822,7 @@ function closeGithubModal(){
 function saveGithubSettings(){
   const settings={
     owner:document.getElementById('gh-owner').value.trim(),
-    repo:document.getElementById('gh-repo').value.trim(),
+    repo:normalizeRepoName(document.getElementById('gh-repo').value),
     branch:document.getElementById('gh-branch').value.trim()||'main',
     token:document.getElementById('gh-token').value.trim()
   };
