@@ -22,7 +22,7 @@
   },
   {
     "id": "equipment",
-    "name": "Equipment & Safety",
+    "name": "Cancellations",
     "icon": "gear",
     "color": "#6060c0",
     "desc": "Equipment maintenance, safety checks, and incident reporting."
