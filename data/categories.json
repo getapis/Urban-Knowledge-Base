@@ -1,15 +1,15 @@
 [
   {
     "id": "opening-closing",
-    "name": "Retention Playbook v2",
+    "name": "Retention Playbook",
     "icon": "key",
     "color": "#c0161a",
     "desc": "Daily open/close checklists and security procedures. Great workm ad;gndg"
   },
   {
     "id": "class-operations",
-    "name": "Class Operations",
-    "icon": "glove",
+    "name": "Suspensions",
+    "icon": "alert",
     "color": "#d4a017",
     "desc": "Class scheduling, instructor protocols, and training floor procedures."
   },
