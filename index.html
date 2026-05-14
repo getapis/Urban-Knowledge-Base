@@ -171,8 +171,7 @@ button,input,select,textarea{font:inherit}
 .cat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--cat-color)}
 .cat-card::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at top left, rgba(255,255,255,.02), transparent 60%);pointer-events:none}
 .cat-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
-.cat-card-actions{position:absolute;top:.65rem;right:.65rem;z-index:2;display:flex;gap:.35rem;opacity:0;transition:opacity var(--transition)}
-.cat-card:hover .cat-card-actions,.cat-card:focus-within .cat-card-actions{opacity:1}
+.cat-card-actions{position:absolute;top:.65rem;right:.65rem;z-index:2;display:flex;gap:.35rem;opacity:1}
 .cat-icon{width:38px;height:38px;margin-bottom:.7rem;display:inline-grid;place-items:center;color:var(--cat-color);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius)}
 .cat-icon .ui-icon{width:28px;height:28px}
 .cat-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--white);margin-bottom:.3rem;letter-spacing:.02em;padding-right:2.2rem}
@@ -465,7 +464,7 @@ button,input,select,textarea{font:inherit}
         <div class="field"><label>Article count</label><input type="text" id="c-count" disabled></div>
       </div>
       <div class="field"><label>Description</label><textarea id="c-desc" placeholder="Short description shown on the category card."></textarea></div>
-      <p class="help-text">Renaming a category keeps all existing articles attached to it.</p>
+      <p class="help-text">Renaming a category keeps all existing articles attached to it. Deleting a category moves its articles to Uncategorized.</p>
     </div>
     <div class="modal-foot">
       <button class="btn btn-danger left-action" id="delete-category-btn" onclick="deleteCategory()">Delete</button>
@@ -613,6 +612,14 @@ const DEFAULT_CATEGORIES=[
   {id:'member-ops',name:'Member Operations',icon:'heart',color:'#20a060',desc:'Member enquiries, sign-ups, complaints, and service standards.'},
   {id:'emergency',name:'Emergency Procedures',icon:'alert',color:'#e03030',desc:'Emergency response, evacuation, and first aid protocols.'}
 ];
+
+const UNCATEGORIZED_CATEGORY={
+  id:'uncategorized',
+  name:'Uncategorized',
+  icon:'clipboard',
+  color:'#6a6560',
+  desc:'Articles moved from deleted categories.'
+};
 
 let categories=DEFAULT_CATEGORIES.map(category=>({...category}));
 const DEFAULT_ARTICLES=[
@@ -855,52 +862,79 @@ async function loadPersistentContent(){
   articles=loaded[1];
 }
 
-function encodeBase64(text){
-  const bytes=new TextEncoder().encode(text);
-  let binary='';
-  bytes.forEach(byte=>binary+=String.fromCharCode(byte));
-  return btoa(binary);
+async function commitDataFile(path,data,message){
+  return commitDataFiles([{path,data}],message);
 }
 
-async function commitDataFile(path,data,message){
+async function commitDataFiles(changes,message){
   const settings=readGithubSettings();
   if(!settings.owner||!settings.repo||!settings.branch||!settings.token){
     openGithubModal();
     throw new Error('Configure GitHub sync before saving');
   }
 
-  const apiPath=`https://api.github.com/repos/${encodeURIComponent(settings.owner)}/${encodeURIComponent(settings.repo)}/contents/${path}`;
+  const baseUrl=`https://api.github.com/repos/${encodeURIComponent(settings.owner)}/${encodeURIComponent(settings.repo)}`;
   const headers={
     Accept:'application/vnd.github+json',
     Authorization:`Bearer ${settings.token}`,
     'X-GitHub-Api-Version':'2022-11-28'
   };
 
-  const currentResponse=await fetch(`${apiPath}?ref=${encodeURIComponent(settings.branch)}`,{headers});
-  let sha=null;
-  if(currentResponse.ok){
-    const current=await currentResponse.json();
-    sha=current.sha;
-  }else if(currentResponse.status!==404){
-    throw new Error(`GitHub could not read ${path}`);
+  const refResponse=await fetch(`${baseUrl}/git/ref/heads/${encodeURIComponent(settings.branch)}`,{headers});
+  if(!refResponse.ok){
+    throw new Error(`GitHub could not read branch ${settings.branch}`);
+  }
+  const ref=await refResponse.json();
+  const baseCommitSha=ref.object.sha;
+
+  const commitResponse=await fetch(`${baseUrl}/git/commits/${baseCommitSha}`,{headers});
+  if(!commitResponse.ok)throw new Error('GitHub could not read the latest commit');
+  const baseCommit=await commitResponse.json();
+
+  const tree=[];
+  for(const change of changes){
+    const blobResponse=await fetch(`${baseUrl}/git/blobs`,{
+      method:'POST',
+      headers:{...headers,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        content:`${JSON.stringify(change.data,null,2)}\n`,
+        encoding:'utf-8'
+      })
+    });
+    if(!blobResponse.ok){
+      const detail=await blobResponse.text();
+      throw new Error(`GitHub could not prepare ${change.path}: ${detail.slice(0,140)}`);
+    }
+    const blob=await blobResponse.json();
+    tree.push({path:change.path,mode:'100644',type:'blob',sha:blob.sha});
   }
 
-  const payload={
-    message,
-    content:encodeBase64(`${JSON.stringify(data,null,2)}\n`),
-    branch:settings.branch
-  };
-  if(sha)payload.sha=sha;
-
-  const saveResponse=await fetch(apiPath,{
-    method:'PUT',
+  const treeResponse=await fetch(`${baseUrl}/git/trees`,{
+    method:'POST',
     headers:{...headers,'Content-Type':'application/json'},
-    body:JSON.stringify(payload)
+    body:JSON.stringify({base_tree:baseCommit.tree.sha,tree})
   });
-  if(!saveResponse.ok){
-    const detail=await saveResponse.text();
-    throw new Error(`GitHub save failed for ${path}: ${detail.slice(0,160)}`);
-  }
+  if(!treeResponse.ok)throw new Error('GitHub could not create the content update');
+  const newTree=await treeResponse.json();
+
+  const newCommitResponse=await fetch(`${baseUrl}/git/commits`,{
+    method:'POST',
+    headers:{...headers,'Content-Type':'application/json'},
+    body:JSON.stringify({
+      message,
+      tree:newTree.sha,
+      parents:[baseCommitSha]
+    })
+  });
+  if(!newCommitResponse.ok)throw new Error('GitHub could not commit the content update');
+  const newCommit=await newCommitResponse.json();
+
+  const updateRefResponse=await fetch(`${baseUrl}/git/refs/heads/${encodeURIComponent(settings.branch)}`,{
+    method:'PATCH',
+    headers:{...headers,'Content-Type':'application/json'},
+    body:JSON.stringify({sha:newCommit.sha})
+  });
+  if(!updateRefResponse.ok)throw new Error('GitHub could not publish the content update');
 }
 
 function saveArticles(nextArticles,message){
@@ -1406,8 +1440,8 @@ function openCategoryModal(cid){
   document.getElementById('c-count').value=c?`${categoryCount(c.id)} article${categoryCount(c.id)!==1?'s':''}`:'New category';
   const deleteBtn=document.getElementById('delete-category-btn');
   deleteBtn.style.display=c?'inline-flex':'none';
-  deleteBtn.disabled=!!(c&&(categoryCount(c.id)>0||categories.length<=1));
-  deleteBtn.title=c&&categoryCount(c.id)>0?'Move or delete articles before deleting this category':c&&categories.length<=1?'Keep at least one category':'Delete category';
+  deleteBtn.disabled=false;
+  deleteBtn.title=c&&categoryCount(c.id)>0?'Delete category and move articles to Uncategorized':'Delete category';
   document.getElementById('category-modal').classList.add('open');
   setTimeout(()=>document.getElementById('c-name').focus(),40);
 }
@@ -1468,18 +1502,41 @@ async function saveCategory(){
 async function deleteCategory(){
   if(!editingCategoryId)return;
   const count=categoryCount(editingCategoryId);
-  if(count>0){toast('Move articles before deleting this category');return;}
-  if(categories.length<=1){toast('Keep at least one category');return;}
   const cat=categoryById(editingCategoryId);
-  if(!confirm(`Delete category "${cat.name}"?`))return;
-  const nextCategories=categories.filter(c=>c.id!==editingCategoryId);
+  const message=count>0
+    ?`Delete category "${cat.name}" and move ${count} article${count!==1?'s':''} to Uncategorized?`
+    :`Delete category "${cat.name}"?`;
+  if(!confirm(message))return;
+
+  let nextCategories=categories.filter(c=>c.id!==editingCategoryId);
+  let nextArticles=articles;
+
+  if(count>0){
+    if(!nextCategories.some(c=>c.id===UNCATEGORIZED_CATEGORY.id)){
+      nextCategories=[...nextCategories,{...UNCATEGORIZED_CATEGORY}];
+    }
+    nextArticles=articles.map(article=>
+      article.category===editingCategoryId
+        ?{...article,category:UNCATEGORIZED_CATEGORY.id}
+        :article
+    );
+  }
+
+  if(!nextCategories.length){
+    nextCategories=[{...UNCATEGORIZED_CATEGORY}];
+  }
+
   try{
-    await saveCategories(nextCategories,`Delete category: ${cat.name}`);
+    await commitDataFiles([
+      {path:DATA_FILES.categories,data:nextCategories},
+      {path:DATA_FILES.articles,data:nextArticles}
+    ],`Delete category: ${cat.name}`);
     categories=nextCategories;
+    articles=nextArticles;
     closeCategoryModal();
     refreshAll();
     showHome();
-    toast('Category deleted and committed');
+    toast(count>0?'Category deleted; articles moved and committed':'Category deleted and committed');
   }catch(error){
     toast(error.message);
   }
