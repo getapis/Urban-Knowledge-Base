@@ -24,6 +24,14 @@ The website reads from these files on load. Online article/category edits are bl
 
 Create a fine-grained GitHub token with **Contents: Read and write** permission for this repository only. Enter it in the site's **GitHub sync** modal after unlocking the site.
 
+When opened at `https://getapis.github.io/Urban-Knowledge-Base/`, the site auto-fills:
+
+- Owner: `getapis`
+- Repository: `Urban-Knowledge-Base`
+- Branch: `main`
+
+You still need to paste a token before saving edits from the live website.
+
 Do not hard-code this token into the project.
 
 ## Security Note
